@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<MixxxControllerPreset mixxxVersion="" schemaVersion="1">
+<MixxxControllerPreset mixxxVersion="2.2.3" schemaVersion="1">
     <info>
         <name>Denon DN-S3700 (Hybrid Mode)</name>
-        <author>HoneyHazard</author>
+        <author>HoneyHazard, Wtrz</author>
         <description>Controller preset for Denon DN-S3700 turntable operating in hybrid mode (midi + build-in vinyl emulation)</description>
         <forums>TODO</forums>
     </info>
@@ -83,23 +83,16 @@
                 </options>
             </control>
             <control>
-                <group>[Channel1]</group>
-                <key>keylock</key>
+                <group>[Master]</group>
+                <key>DenonDNS3700.keylockButtonChanged</key>
                 <status>0x90</status>
                 <midino>0x06</midino>
                 <options>
-                    <normal/>
+                    <script-binding/>
                 </options>
             </control>
-            <control>
-                <group>[Channel1]</group>
-                <key>keylock</key>
-                <status>0x80</status>
-                <midino>0x06</midino>
-                <options>
-                    <normal/>
-                </options>
-            </control>
+            
+            
         </controls>
         <outputs/>
     </controller>

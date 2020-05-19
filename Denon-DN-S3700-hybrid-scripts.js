@@ -500,6 +500,8 @@ DenonDNS3700.ejectButtonPressed = function(channel, control, value) {
     }
 }
 
+//TODO: Add hotcue, beatlooping with mode, playposition forward rewind. 
+
 DenonDNS3700.parametersRotaryChanged = function(channel, control, value)
 {
     if (DenonDNS3700.isInitializing()) return;
@@ -573,6 +575,33 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
     DenonDNS3700.updatePlaybackDisplay();
 }
 
+
+DenonDNS3700.keylockButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("Keylock Pressed");
+        DenonDNS3700.debugFlash(engine.getValue(DenonDNS3700.channel, "keylock").toString());
+        
+        if (engine.getValue(DenonDNS3700.channel, "keylock") == 0 ) {
+            engine.setValue(DenonDNS3700.channel, "keylock",1);
+            DenonDNS3700.debugFlash("Keylock Enabled");
+        }
+        else {
+            engine.setValue(DenonDNS3700.channel, "keylock",0); 
+            DenonDNS3700.debugFlash("Keylock Disabled");
+        } 
+
+             
+    } 
+    DenonDNS3700.updatePlaybackDisplay();
+}
+
+
+
+
+
 DenonDNS3700.mixxxEjectHandler = function()
 {
     if (DenonDNS3700.trackState == DenonDNS3700.TrackState.Loading) {
@@ -595,7 +624,8 @@ DenonDNS3700.mixxxBpmHandler = function(value)
         if (DenonDNS3700.trackState != DenonDNS3700.TrackState.Loaded) {
             DenonDNS3700.trackState = DenonDNS3700.TrackState.Loaded;
             DenonDNS3700.userFlash("Track Loaded");
-            DenonDNS3700.userScroll("Various Artists - Track Name Placeholder");
+            DenonDNS3700.setTextDisplay(0, 0, engine.getValue(DenonDNS3700.channel, "bpm").toString());
+            DenonDNS3700.userFlash(engine.getValue(DenonDNS3700.channel, "bpm").toString());
             DenonDNS3700.updatePlaybackDisplay();
         }
     }   
