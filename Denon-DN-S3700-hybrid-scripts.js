@@ -144,10 +144,16 @@ DenonDNS3700.requestPresetDataTimer = [];
 DenonDNS3700.initFlashTimer = [];
 
 DenonDNS3700.CHANNEL_CONNECTIONS = [
-    {control: "bpm",         handler: "mixxxBpmHandler"},
-    {control: "eject",       handler: "mixxxEjectHandler"},
-    {control: "beat_active", handler: "mixxxBeatActiveHandler"},
-    {control: "keylock",     handler: "updateKeylockDisplay"}
+    {control: "bpm",                handler: "mixxxBpmHandler"},
+    {control: "eject",              handler: "mixxxEjectHandler"},
+    {control: "beat_active",        handler: "mixxxBeatActiveHandler"},
+    {control: "keylock",            handler: "updateKeylockDisplay"},
+    {control: "play_indicator",     handler: "mixxxPlay_indicator"    },
+    {control: "cue_indicator",      handler: "mixxxCue_indicator"    }
+];
+
+DenonDNS3700.MASTER_CONNECTIONS = [
+    {control: "maximize_library",   handler: "mixxxMaximize_libraryHandler"}
 ];
 
 /*
@@ -179,11 +185,21 @@ DenonDNS3700.stopTimer = function(timer) {
     }
 }
 
-DenonDNS3700.makeChannelConnetions = function(enable)
+DenonDNS3700.makeChannelConnections = function(enable)
 {
     for (var i = 0; i < DenonDNS3700.CHANNEL_CONNECTIONS.length; ++i) {
         var obj = DenonDNS3700.CHANNEL_CONNECTIONS[i];
         engine.connectControl(DenonDNS3700.channel,
+                              obj.control, "DenonDNS3700." + obj.handler,
+                              !enable);
+    }
+}
+
+DenonDNS3700.makeMasterConnections = function(enable)
+{
+    for (var i = 0; i < DenonDNS3700.MASTER_CONNECTIONS.length; ++i) {
+        var obj = DenonDNS3700.MASTER_CONNECTIONS[i];
+        engine.connectControl("[Master]",
                               obj.control, "DenonDNS3700." + obj.handler,
                               !enable);
     }
@@ -285,7 +301,8 @@ DenonDNS3700.finishInit = function (id)
     engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", true);
 
     // enable connections
-    DenonDNS3700.makeChannelConnetions(true);
+    DenonDNS3700.makeChannelConnections(true);
+    DenonDNS3700.makeMasterConnections(true);
 
     var bpmAvailable = DenonDNS3700.mixxxBpmIsAvailable();
 
@@ -390,6 +407,10 @@ DenonDNS3700.threeLed = function(mode) {
 DenonDNS3700.ejectLed = function(mode)
 {
     DenonDNS3700.commonLedOp(DenonDNS3700.Led.DiskEject, mode);
+}
+
+DenonDNS3700.playlistLed = function(mode) {
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Playlist, mode);
 }
 
 
@@ -499,8 +520,8 @@ DenonDNS3700.updatePlaybackDisplay = function()
     }
        
     DenonDNS3700.debugStateInfo(debugStateInfo);
-    DenonDNS3700.playLed(playLed);
-    DenonDNS3700.cueLed(cueLed);
+    //DenonDNS3700.playLed(playLed);
+    //DenonDNS3700.cueLed(cueLed);
     DenonDNS3700.effectsLed(effectsLed);
     DenonDNS3700.parametersLed(parametersLed);
     DenonDNS3700.ejectLed(ejectLed);
@@ -511,6 +532,14 @@ DenonDNS3700.updateKeylockDisplay = function()
     var keyOn = engine.getValue(DenonDNS3700.channel, "keylock");
     DenonDNS3700.keyLed(keyOn ? DenonDNS3700.LedMode.On : DenonDNS3700.LedMode.Off);
 }
+
+DenonDNS3700.mixxxMaximize_libraryHandler = function()
+{
+    var keyOn = engine.getValue("[Master]", "maximize_library");
+    DenonDNS3700.playlistLed(keyOn ? DenonDNS3700.LedMode.On : DenonDNS3700.LedMode.Off);
+}
+
+
 
 DenonDNS3700.ejectButtonPressed = function(channel, control, value) {
     if (DenonDNS3700.isInitializing()) return;
@@ -584,8 +613,8 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Cue Pressed");       
         if (DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Searching) {
-            if (DenonDNS3700.trackState == DenonDNS3700.TrackState.Loaded) {
-                DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
+           if (DenonDNS3700.trackState == DenonDNS3700.TrackState.Loaded) {
+               DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
             }
         } else {
             DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
@@ -594,6 +623,8 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
         // cue button released
         DenonDNS3700.debugFlash("Cue Released");
         DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
+      
+
     }
     DenonDNS3700.updatePlaybackDisplay();
 }
@@ -647,7 +678,8 @@ DenonDNS3700.oneButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("One Pressed");    
+        DenonDNS3700.debugFlash("One Pressed");
+        DenonDNS3700.oneLed(DenonDNS3700.LedMode.On);   
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -670,7 +702,8 @@ DenonDNS3700.twoButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("Two Pressed");    
+        DenonDNS3700.debugFlash("Two Pressed");  
+        DenonDNS3700.twoLed(DenonDNS3700.LedMode.On);   
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -693,7 +726,8 @@ DenonDNS3700.threeButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("Three Pressed");    
+        DenonDNS3700.debugFlash("Three Pressed"); 
+        DenonDNS3700.threeLed(DenonDNS3700.LedMode.On);    
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -724,7 +758,7 @@ DenonDNS3700.clr1ButtonChanged = function(channel, control, value)
             
         }
         else {
-            //engine.setValue(DenonDNS3700.channel, "hotcue_3_activate",1);
+            //engine.setValue(DenonDNS3700.channel, "hotcue_1_activate",1);
             //This feature is unsupported and will be added in mixxx 2.4
             engine.setValue(DenonDNS3700.channel, "reloop_toggle",1); 
         } 
@@ -747,7 +781,7 @@ DenonDNS3700.clr2ButtonChanged = function(channel, control, value)
             
         }
         else {
-            //engine.setValue(DenonDNS3700.channel, "hotcue_3_activate",1);
+            //engine.setValue(DenonDNS3700.channel, "hotcue_2_activate",1);
             //This feature is unsupported and will be added in mixxx 2.4
             engine.setValue(DenonDNS3700.channel, "reloop_toggle",1); 
         } 
@@ -779,6 +813,71 @@ DenonDNS3700.clr3ButtonChanged = function(channel, control, value)
     } 
     DenonDNS3700.updatePlaybackDisplay();
 }
+
+DenonDNS3700.fastSearchPlusButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("FS+ Pressed");    
+        
+        
+            
+            engine.setValue(DenonDNS3700.channel, "fwd",1);
+            
+        }
+        else {
+            DenonDNS3700.debugFlash("FS- Released");  
+            engine.setValue(DenonDNS3700.channel, "fwd",0); 
+        } 
+
+             
+    
+    DenonDNS3700.updatePlaybackDisplay();
+}
+
+DenonDNS3700.fastSearchMinusButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("FS- Pressed");    
+        
+        
+            
+            engine.setValue(DenonDNS3700.channel, "back",1);
+            
+        }
+        else {
+            DenonDNS3700.debugFlash("FS- Released");   
+            engine.setValue(DenonDNS3700.channel, "back",0); 
+        } 
+
+             
+    
+    DenonDNS3700.updatePlaybackDisplay();
+}
+
+DenonDNS3700.playlistButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("Playlist Pressed");    
+        
+        engine.setValue('[Master]', 'maximize_library', ! (engine.getValue('[Master]', 'maximize_library')));1
+           
+            
+        } 
+
+             
+    
+    DenonDNS3700.updatePlaybackDisplay();
+}
+
+
+
+
 
 
 
@@ -817,6 +916,21 @@ DenonDNS3700.mixxxBeatActiveHandler = function(value)
     DenonDNS3700.tapLed(value ? DenonDNS3700.LedMode.On
                               : DenonDNS3700.LedMode.Off);
 }
+
+DenonDNS3700.mixxxPlay_indicator = function(value)
+{    
+    DenonDNS3700.playLed(value ? DenonDNS3700.LedMode.On
+                              : DenonDNS3700.LedMode.Off);
+}
+
+
+DenonDNS3700.mixxxCue_indicator = function(value)
+{    
+    DenonDNS3700.cueLed(value ? DenonDNS3700.LedMode.On
+                              : DenonDNS3700.LedMode.Off);
+}
+
+
 
 DenonDNS3700.setTextDisplayState = function(row, state)
 {
@@ -1064,6 +1178,7 @@ DenonDNS3700.shutdown = function ()
 
     // remove existing connections
     if (DenonDNS3700.deck != -1) {
-        DenonDNS3700.makeChannelConnetions(false);
+        DenonDNS3700.makeChannelConnections(false);
+        DenonDNS3700.makeMasterConnections(false);
     }
 }

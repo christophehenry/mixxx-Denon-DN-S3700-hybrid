@@ -153,7 +153,52 @@
                 <options>
                     <script-binding/>
                 </options>
-            </control>   
+            </control>    
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.fastSearchPlusButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x10</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>    
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.fastSearchPlusButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x10</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.fastSearchMinusButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x11</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>    
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.fastSearchMinusButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x11</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.playlistButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
         </controls>
         <outputs/>
     </controller>
