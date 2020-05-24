@@ -3,13 +3,14 @@ function DenonDNS3700() {}
 /*
   TODO: Display bpm, key
   TODO: Start in a known platter state: stopped, moving, reverse
-  TODO: Display loaded track (mixxx devs)
+  TODO: Display loaded track (mixxx devs) 
   TODO: Better handling of wether the track is loaded, not loaded, or loading
 
   Later awesome features:
   TODO: Control sample deck
 */
 
+//Set debug level = 2 , to display debug messages. 
 DenonDNS3700.DEBUG_LEVEL = 2;
 
 DenonDNS3700.CMD_CODE = 0xB0;
@@ -172,6 +173,8 @@ DenonDNS3700.MASTER_CONNECTIONS = [
   DenonDNS3700.userScroll = function(str, [prefix])
 */
 
+//GENERAL FUNCTIONS
+
 DenonDNS3700.startTimer = function(timer, delay, handler)
 {
     DenonDNS3700.stopTimer(timer);
@@ -270,19 +273,18 @@ DenonDNS3700.requestPresetDataTimerHandler = function()
 DenonDNS3700.initDisplayTimerHandler = function()
 {
     if (DenonDNS3700.initDisplayCounter % 4 == 0) {
-        //DenonDNS3700.setTextDisplay(0, 0, "/    Hello,    \\");
-        //DenonDNS3700.setTextDisplay(1, 0, "\\    Mixxx     /");
+        
         DenonDNS3700.setTextDisplay(0, 0, "Hello, Mixxx");
         DenonDNS3700.setTextDisplay(1, 0, "Deck " + DenonDNS3700.deck + " Online :)");
-        DenonDNS3700.tapLed(DenonDNS3700.LedMode.On);
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap,(DenonDNS3700.LedMode.On));
     } else if (DenonDNS3700.initDisplayCounter % 2 == 0) {
         DenonDNS3700.setTextDisplay(0, 0, "123456789012345678");
         DenonDNS3700.setTextDisplay(1, 0, "ABCDEFGHIJKLMNOPQR");
-        DenonDNS3700.tapLed(DenonDNS3700.LedMode.On);
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap,(DenonDNS3700.LedMode.On));
     } else {
         DenonDNS3700.clearTextDisplay(0);
         DenonDNS3700.clearTextDisplay(1);
-        DenonDNS3700.tapLed(DenonDNS3700.LedMode.Off);
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap,(DenonDNS3700.LedMode.Off));
     }
     
     if (DenonDNS3700.initDisplayCounter == 0) {
@@ -357,60 +359,6 @@ DenonDNS3700.turnOffAllLeds = function()
         var led = DenonDNS3700.Led[key];
         DenonDNS3700.commonLedOp(led, DenonDNS3700.LedMode.Off);
     }
-}
-
-DenonDNS3700.playLed = function(mode)
-{
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Play, mode);
-}
-
-DenonDNS3700.cueLed = function(mode)
-{
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Cue, mode);
-}
-
-DenonDNS3700.tapLed = function(mode)
-{
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap, mode);
-}
-
-DenonDNS3700.effectsLed = function(mode)
-{
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Effects, mode);
-}
-
-DenonDNS3700.parametersLed = function(mode)
-{
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Parameters, mode);
-}
-
-DenonDNS3700.keyLed = function(mode) {
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.KeyAdjust, mode);
-}
-
-DenonDNS3700.autoloopsetLed = function(mode) {
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.AutoLoopSet, mode);
-}
-
-DenonDNS3700.oneLed = function(mode) {
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.One, mode);
-}
-
-DenonDNS3700.twoLed = function(mode) {
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Two, mode);
-}
-
-DenonDNS3700.threeLed = function(mode) {
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three, mode);
-}
-
-DenonDNS3700.ejectLed = function(mode)
-{
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.DiskEject, mode);
-}
-
-DenonDNS3700.playlistLed = function(mode) {
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Playlist, mode);
 }
 
 
@@ -520,23 +468,22 @@ DenonDNS3700.updatePlaybackDisplay = function()
     }
        
     DenonDNS3700.debugStateInfo(debugStateInfo);
-    //DenonDNS3700.playLed(playLed);
-    //DenonDNS3700.cueLed(cueLed);
-    DenonDNS3700.effectsLed(effectsLed);
-    DenonDNS3700.parametersLed(parametersLed);
-    DenonDNS3700.ejectLed(ejectLed);
+  
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Effects,(effectsLed));
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Parameters,(parametersLed));
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.DiskEject,(ejectLed));
 }
 
 DenonDNS3700.updateKeylockDisplay = function()
 {
     var keyOn = engine.getValue(DenonDNS3700.channel, "keylock");
-    DenonDNS3700.keyLed(keyOn ? DenonDNS3700.LedMode.On : DenonDNS3700.LedMode.Off);
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.KeyAdjust,(keyOn ? DenonDNS3700.LedMode.On : DenonDNS3700.LedMode.Off));
 }
 
 DenonDNS3700.mixxxMaximize_libraryHandler = function()
 {
     var keyOn = engine.getValue("[Master]", "maximize_library");
-    DenonDNS3700.playlistLed(keyOn ? DenonDNS3700.LedMode.On : DenonDNS3700.LedMode.Off);
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Playlist,(keyOn ? DenonDNS3700.LedMode.On : DenonDNS3700.LedMode.Off));
 }
 
 
@@ -560,10 +507,10 @@ DenonDNS3700.parametersRotaryChanged = function(channel, control, value)
     
     if (value == DenonDNS3700.RotaryChange.Left) {
         DenonDNS3700.debugFlash("Params Left");
-        engine.setValue("[Playlist]", "SelectPrevTrack", 1);
+        engine.setValue("[Library]", "MoveUp", 1);
     } else {
         DenonDNS3700.debugFlash("Params Right");
-        engine.setValue("[Playlist]", "SelectNextTrack", 1);
+        engine.setValue("[Library]", "MoveDown", 1);
     }
 }
 
@@ -660,11 +607,11 @@ DenonDNS3700.autoLoopSetButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("AutoLoopSet Pressed");    
         
         if (DenonDNS3700.AutoLoopState == 0) {
-            DenonDNS3700.autoloopsetLed(DenonDNS3700.LedMode.On);
+            DenonDNS3700.commonLedOp(DenonDNS3700.Led.AutoLoopSet,(DenonDNS3700.LedMode.On));
             DenonDNS3700.AutoLoopState = 1;
         }
         else {
-            DenonDNS3700.autoloopsetLed(DenonDNS3700.LedMode.Off);
+            DenonDNS3700.commonLedOp(DenonDNS3700.Led.AutoLoopSet,(DenonDNS3700.LedMode.Off));
             DenonDNS3700.AutoLoopState = 0;
         } 
 
@@ -679,7 +626,7 @@ DenonDNS3700.oneButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("One Pressed");
-        DenonDNS3700.oneLed(DenonDNS3700.LedMode.On);   
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.One,(DenonDNS3700.LedMode.On));   
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -703,7 +650,7 @@ DenonDNS3700.twoButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Two Pressed");  
-        DenonDNS3700.twoLed(DenonDNS3700.LedMode.On);   
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Two,(DenonDNS3700.LedMode.On));   
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -727,7 +674,7 @@ DenonDNS3700.threeButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Three Pressed"); 
-        DenonDNS3700.threeLed(DenonDNS3700.LedMode.On);    
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.On));    
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -750,7 +697,8 @@ DenonDNS3700.clr1ButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("CLR1 Pressed");    
+        DenonDNS3700.debugFlash("CLR1 Pressed"); 
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.One,(DenonDNS3700.LedMode.Off));   
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -773,7 +721,8 @@ DenonDNS3700.clr2ButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("CLR2 Pressed");    
+        DenonDNS3700.debugFlash("CLR2 Pressed");
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Two,(DenonDNS3700.LedMode.Off));    
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -796,7 +745,8 @@ DenonDNS3700.clr3ButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("CLR3 Pressed");    
+        DenonDNS3700.debugFlash("CLR3 Pressed");
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.Off));    
         
         if (DenonDNS3700.AutoLoopState == 0) {
             
@@ -913,21 +863,21 @@ DenonDNS3700.mixxxBpmHandler = function(value)
 
 DenonDNS3700.mixxxBeatActiveHandler = function(value)
 {    
-    DenonDNS3700.tapLed(value ? DenonDNS3700.LedMode.On
-                              : DenonDNS3700.LedMode.Off);
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap,(value ? DenonDNS3700.LedMode.On
+                              : DenonDNS3700.LedMode.Off));
 }
 
 DenonDNS3700.mixxxPlay_indicator = function(value)
 {    
-    DenonDNS3700.playLed(value ? DenonDNS3700.LedMode.On
-                              : DenonDNS3700.LedMode.Off);
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Play,(value ? DenonDNS3700.LedMode.On
+                              : DenonDNS3700.LedMode.Off));
 }
 
 
 DenonDNS3700.mixxxCue_indicator = function(value)
 {    
-    DenonDNS3700.cueLed(value ? DenonDNS3700.LedMode.On
-                              : DenonDNS3700.LedMode.Off);
+    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Cue,(value ? DenonDNS3700.LedMode.On
+                              : DenonDNS3700.LedMode.Off));
 }
 
 
