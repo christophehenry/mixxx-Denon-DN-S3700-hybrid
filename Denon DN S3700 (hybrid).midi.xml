@@ -199,6 +199,51 @@
                     <script-binding/>
                 </options>
             </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.backButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x30</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.pitchBendPlusButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x08</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.pitchBendPlusButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x08</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+                        <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.pitchBendMinusButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.pitchBendMinusButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
         </controls>
         <outputs/>
     </controller>
