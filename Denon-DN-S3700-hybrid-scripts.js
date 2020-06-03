@@ -168,7 +168,8 @@ DenonDNS3700.CHANNEL_CONNECTIONS = [
     {control: "beat_active",        handler: "mixxxBeatActiveHandler"},
     {control: "keylock",            handler: "mixxxKeylockHandler"},
     {control: "play_indicator",     handler: "mixxxPlay_indicator"    },
-    {control: "cue_indicator",      handler: "mixxxCue_indicator"    }
+    {control: "cue_indicator",      handler: "mixxxCue_indicator"    },
+    {control: "play",               handler: "mixxxPlayHandler"}
 ];
 
 DenonDNS3700.MASTER_CONNECTIONS = [
@@ -551,6 +552,14 @@ DenonDNS3700.mixxxCue_indicator = function(value)
                               : DenonDNS3700.LedMode.Off));
 }
 
+//mixxxPlayHandler
+
+DenonDNS3700.mixxxPlayHandler = function(value)
+{    
+    if (value == 1) {
+        DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
+    }
+}
 
 
 DenonDNS3700.setTextDisplayState = function(row, state)
