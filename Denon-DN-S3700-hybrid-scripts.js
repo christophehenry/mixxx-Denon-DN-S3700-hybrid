@@ -1,13 +1,23 @@
 function DenonDNS3700() {}
 
 /*
+Planning
+1. Add loop A/B/Reloop + hotcue controls
+2. Add live time indication - confirmed available, 
+3. Add live bpm indication - not confirmed available. 
+4. Design effects buttons echo / flanger / filter
+5. Add override for vinylcontrol via plattermode button?
+6. Brake effect?
+7. trackstate & playstate as part of control
+
+
+TODO: Controls for hotcue leds instead of hard on/off --> mixxx 2.4
+
   TODO: Display bpm, key
   TODO: Start in a known platter state: stopped, moving, reverse
   TODO: Display loaded track (mixxx devs) 
   TODO: Better handling of wether the track is loaded, not loaded, or loading
 
-  Later awesome features:
-  TODO: Control sample deck
 */
 
 /*
@@ -19,6 +29,7 @@ function DenonDNS3700() {}
 
 
 DenonDNS3700.DEBUG_LEVEL = 2;
+DenonDNS3700.DVS = true;
 
 DenonDNS3700.CMD_CODE = 0xB0;
 
@@ -313,7 +324,7 @@ DenonDNS3700.finishInit = function (id)
     DenonDNS3700.stopTimer(DenonDNS3700.initFlashTimer);
 
     // force into vinyl control? this is convenient but questionable
-    engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", true);
+    engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", DenonDNS3700.DVS);
 
     // enable connections
     DenonDNS3700.makeChannelConnections(true);
@@ -841,7 +852,9 @@ DenonDNS3700.playButtonChanged = function(channel, control, value)
     
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Play Pressed");
-        engine.setValue(DenonDNS3700.channel, "play",1);
+        
+        //engine.setValue(DenonDNS3700.channel, "play",! (DenonDNS3700.mixxxIsPlaying()));
+
         if (DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Playing) {
             if (DenonDNS3700.trackState == DenonDNS3700.TrackState.Loaded) {
                 DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Paused;
@@ -850,10 +863,11 @@ DenonDNS3700.playButtonChanged = function(channel, control, value)
             }
         } else {
             DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
-            engine.setValue(DenonDNS3700.channel, "play",0);
+            
         }
     }
     DenonDNS3700.updatePlaybackDisplay();
+
 }
 
 DenonDNS3700.cueButtonChanged = function(channel, control, value)
@@ -861,8 +875,25 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
-        DenonDNS3700.debugFlash("Cue Pressed"); 
-        engine.setValue(DenonDNS3700.channel, "cue_default",1);
+        DenonDNS3700.debugFlash("Cue Pressed");
+
+        if (engine.getValue(DenonDNS3700.channel, "vinylcontrol_enabled")) {
+
+            if (DenonDNS3700.mixxxIsPlaying()){
+
+               // engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);
+                DenonDNS3700.debugFlash("Go to stop");
+            }
+            else {
+               // engine.setValue(DenonDNS3700.channel, "cue_default",1);
+                DenonDNS3700.debugFlash("ohh no");
+            }
+
+            
+        }
+        else {
+        //engine.setValue(DenonDNS3700.channel, "cue_default",1);
+        }
         
 
               
@@ -876,8 +907,8 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
     } else {
         // cue button released
         DenonDNS3700.debugFlash("Cue Released");
-        engine.setValue(DenonDNS3700.channel, "cue_default",0);
-       //engine.setValue(DenonDNS3700.channel, "play",0);
+       // engine.setValue(DenonDNS3700.channel, "cue_default",0);
+        
         DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
       
 
@@ -1168,6 +1199,7 @@ DenonDNS3700.pitchBendPlusButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Pitch + Pressed"); 
+        //Vinyl control does not allow for pitch bend. Therefor turn vinylcontrol off untill released
         engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", false);  
         engine.setValue(DenonDNS3700.channel, "rate_temp_up",1);
            
@@ -1176,7 +1208,8 @@ DenonDNS3700.pitchBendPlusButtonChanged = function(channel, control, value)
 
     else {
         engine.setValue(DenonDNS3700.channel, "rate_temp_up",0);
-        engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", true);  
+        //Vinyl control does not allow for pitch bend. Therefor turn vinylcontrol off untill released
+        engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", DenonDNS3700.DVS);  
 
     }
 
@@ -1191,6 +1224,7 @@ DenonDNS3700.pitchBendMinusButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Pitch - Pressed"); 
+        //Vinyl control does not allow for pitch bend. Therefor turn vinylcontrol off untill released
         engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", false);  
         engine.setValue(DenonDNS3700.channel, "rate_temp_down",1);
            
@@ -1199,7 +1233,8 @@ DenonDNS3700.pitchBendMinusButtonChanged = function(channel, control, value)
 
     else {
         engine.setValue(DenonDNS3700.channel, "rate_temp_down",0);
-        engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", true);  
+        //Vinyl control does not allow for pitch bend. Therefor turn vinylcontrol off untill released
+        engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", DenonDNS3700.DVS);  
 
     }
 
