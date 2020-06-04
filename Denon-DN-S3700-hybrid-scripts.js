@@ -1040,7 +1040,7 @@ DenonDNS3700.clr1ButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("CLR1 Pressed"); 
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.One,(DenonDNS3700.LedMode.Off));   
         
-        if (DenonDNS3700.AutoLoopState == DenonDNS3700.AutoLoopState.Off) {
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_1_clear",1);
             
@@ -1064,7 +1064,7 @@ DenonDNS3700.clr2ButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("CLR2 Pressed");
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.Two,(DenonDNS3700.LedMode.Off));    
         
-        if (DenonDNS3700.AutoLoopState == DenonDNS3700.AutoLoopState.Off) {
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_2_clear",1);
             
