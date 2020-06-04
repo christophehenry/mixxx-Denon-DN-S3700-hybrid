@@ -641,10 +641,9 @@ DenonDNS3700.mixxxBpmHandler = function(value)
             DenonDNS3700.trackState = DenonDNS3700.TrackState.Loaded;
             DenonDNS3700.userFlash("Track Loaded");
             DenonDNS3700.setTextDisplay(0, 0, engine.getValue(DenonDNS3700.channel, "bpm").toString());
-            //DenonDNS3700.userFlash(engine.getValue(DenonDNS3700.channel, "bpm").toString());
             DenonDNS3700.updatePlaybackDisplay();
         }
-        DenonDNS3700.setTextDisplay(0, 13, Math.floor(engine.getValue(DenonDNS3700.channel, "bpm")).toString());
+        DenonDNS3700.setTextDisplay(0, 13, Math.round(engine.getValue(DenonDNS3700.channel, "bpm")).toString());
         //DenonDNS3700.updatePlaybackDisplay();
     }   
 }
