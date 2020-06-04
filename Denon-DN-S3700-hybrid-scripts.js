@@ -346,6 +346,7 @@ DenonDNS3700.init = function (id, debug)
     DenonDNS3700.channel = null;
     DenonDNS3700.cueHeld = false;
     DenonDNS3700.timeDisplayState = DenonDNS3700.TimeDisplayState.Remaining;
+    DenonDNS3700.autoLoopState = DenonDNS3700.AutoLoopState.Off;
     DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Initializing;
     DenonDNS3700.trackState = DenonDNS3700.TrackState.Initializing;
     DenonDNS3700.startTimer(DenonDNS3700.requestPresetDataTimer, 250,
