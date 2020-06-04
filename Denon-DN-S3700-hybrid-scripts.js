@@ -48,7 +48,7 @@ DenonDNS3700.LedMode = {
     Blink: 0x4C
 }
 
-DenonDNS3700.VDFMode = {
+DenonDNS3700.VdfMode = {
     VDF_On: 0x4D,
     VDF_Off: 0x4E,
     VDF_Blink: 0x4F
@@ -91,6 +91,77 @@ DenonDNS3700.Led = {
     RightBezel: 0x44,
     CdIn: 0x48
 }
+
+DenonDNS3700.Vdf = {
+    T: 0x01,
+    Remain: 0x02,
+    Elapsed: 0x03,
+    Cont: 0x04, 
+    Single: 0x05,
+    Bpm: 0x06,
+    m: 0x07,
+    s: 0x08,
+    f: 0x09,
+    PitchDotRight: 0x0A,
+    PitchDotCenter: 0x0B,
+    PitchDotLeft: 0x0C,
+    Mp3: 0x10,
+    Wav: 0x11,
+    Kb: 0x13,
+    KeyAdj: 0x14,
+    Memo: 0x15,
+    BracketLeft: 0x16,
+    BracketRight: 0x18,
+    A: 0x1A,
+    B: 0x1C,
+    Pitch: 0x46,
+    Aac: 0x47,
+    Aiff: 0x48,
+    Wmf: 0x49,
+    ScratchRingOutside: 0x1E,
+    ScratchRingInside: 0x1F,
+    TouchDot: 0x20,
+    TrackPositionBlink: 0x21, //Only use 0x4F/ 0x4E
+    ScratchPosition01: 0x22, //Top Right, only use 0x4F / 0x4E
+    ScratchPosition02: 0x23, //only use 0x4F / 0x4E
+    ScratchPosition03: 0x24, //only use 0x4F / 0x4E
+    ScratchPosition04: 0x25, //only use 0x4F / 0x4E
+    ScratchPosition05: 0x26, //only use 0x4F / 0x4E
+    ScratchPosition06: 0x27, //only use 0x4F / 0x4E
+    ScratchPosition07: 0x28, //only use 0x4F / 0x4E
+    ScratchPosition08: 0x29, //only use 0x4F / 0x4E
+    ScratchPosition09: 0x2A, //only use 0x4F / 0x4E
+    ScratchPosition10: 0x2B, //only use 0x4F / 0x4E
+    ScratchPosition11: 0x2C, //only use 0x4F / 0x4E
+    ScratchPosition12: 0x2D, //only use 0x4F / 0x4E
+    ScratchPosition13: 0x2E, //only use 0x4F / 0x4E
+    ScratchPosition14: 0x2F, //only use 0x4F / 0x4E
+    ScratchPosition15: 0x30, //only use 0x4F / 0x4E
+    ScratchPosition16: 0x31, //BOTTOM, only use 0x4F / 0x4E
+    ScratchPosition17: 0x32, //only use 0x4F / 0x4E
+    ScratchPosition18: 0x33, //only use 0x4F / 0x4E
+    ScratchPosition19: 0x34, //only use 0x4F / 0x4E
+    ScratchPosition20: 0x35, //only use 0x4F / 0x4E
+    ScratchPosition21: 0x36, //only use 0x4F / 0x4E
+    ScratchPosition22: 0x37, //only use 0x4F / 0x4E
+    ScratchPosition23: 0x38, //only use 0x4F / 0x4E
+    ScratchPosition24: 0x39, //only use 0x4F / 0x4E
+    ScratchPosition25: 0x3A, //only use 0x4F / 0x4E
+    ScratchPosition26: 0x3B, //only use 0x4F / 0x4E
+    ScratchPosition27: 0x3C, //only use 0x4F / 0x4E
+    ScratchPosition28: 0x3D, //only use 0x4F / 0x4E
+    ScratchPosition29: 0x3E, //only use 0x4F / 0x4E
+    ScratchPosition30: 0x3F, //only use 0x4F / 0x4E
+    ScratchPosition31: 0x40, //only use 0x4F / 0x4E
+    ScratchPosition32: 0x41, //TOP, only use 0x4F / 0x4E
+    
+
+
+
+
+}
+
+
 
 DenonDNS3700.PRESET_REQUEST = [
     0xF0, // start of system exlusive
@@ -155,6 +226,11 @@ DenonDNS3700.TrackState = {
     Failed : 5 // TODO
 }
 
+DenonDNS3700.TimeDisplayState = {
+    Remaining: 0,
+    Elapsed: 1
+}
+
 DenonDNS3700.AutoLoopState = {
     Off : 0,
     On  : 1
@@ -177,7 +253,10 @@ DenonDNS3700.CHANNEL_CONNECTIONS = [
     {control: "keylock",            handler: "mixxxKeylockHandler"},
     {control: "play_indicator",     handler: "mixxxPlay_indicator"    },
     {control: "cue_indicator",      handler: "mixxxCue_indicator"    },
-    {control: "play",               handler: "mixxxPlayHandler"}
+    {control: "play",               handler: "mixxxPlayHandler"},
+    {control: "time_remaining",     handler: "mixxxTimeRemainingHandler"},
+    {control: "time_elapsed",       handler: "mixxxTimeElapsedHandler"},
+    {control: "playposition",       handler: "mixxxPlayPositionHandler"},
 ];
 
 DenonDNS3700.MASTER_CONNECTIONS = [
@@ -266,6 +345,7 @@ DenonDNS3700.init = function (id, debug)
     DenonDNS3700.deck = -1;
     DenonDNS3700.channel = null;
     DenonDNS3700.cueHeld = false;
+    DenonDNS3700.timeDisplayState = DenonDNS3700.TimeDisplayState.Remaining;
     DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Initializing;
     DenonDNS3700.trackState = DenonDNS3700.TrackState.Initializing;
     DenonDNS3700.startTimer(DenonDNS3700.requestPresetDataTimer, 250,
@@ -495,6 +575,22 @@ DenonDNS3700.updatePlaybackDisplay = function()
         var ejectLed = DenonDNS3700.LedMode.Off;
         break;
     }
+    switch (DenonDNS3700.timeDisplayState) {
+    case DenonDNS3700.TimeDisplayState.Remaining:
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_On,DenonDNS3700.Vdf.Remain);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_Off,DenonDNS3700.Vdf.Elapsed);
+        break;
+
+    case DenonDNS3700.TimeDisplayState.Elapsed:
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_On,DenonDNS3700.Vdf.Elapsed);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_Off,DenonDNS3700.Vdf.Remain);
+        break;
+
+
+
+
+    }
+    
        
     DenonDNS3700.debugStateInfo(debugStateInfo);
   
@@ -549,22 +645,76 @@ DenonDNS3700.mixxxBpmHandler = function(value)
 }
 
 DenonDNS3700.mixxxBeatActiveHandler = function(value)
-{    
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap,(value ? DenonDNS3700.LedMode.On
+{   
+    //limiting midi out while debugging. 
+    if (DenonDNS3700.DEBUG_LEVEL != 2) {
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Tap,(value ? DenonDNS3700.LedMode.On
                               : DenonDNS3700.LedMode.Off));
+        }
 }
 
+DenonDNS3700.mixxxTimeRemainingHandler = function(value)
+{   
+    if (DenonDNS3700.timeDisplayState == DenonDNS3700.TimeDisplayState.Remaining){
+        var minutes = Math.floor(value / 60);
+        var seconds = Math.floor(value % 60);
+        var frame = Math.floor((value * 100) % 100)
+    
+        print(minutes);
+        print(seconds);
+        //print(value);
+    
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x42, minutes);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x43, seconds);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x44, 00); //smallest update is second
+     }
+}
+
+DenonDNS3700.mixxxTimeElapsedHandler = function(value)
+{   
+    if (DenonDNS3700.timeDisplayState == DenonDNS3700.TimeDisplayState.Elapsed){
+        var minutes = Math.floor(value / 60);
+        var seconds = Math.floor(value % 60);
+        var frame = Math.floor((value * 100) % 100)
+    
+        print(minutes);
+        print(seconds);
+        //print(value);
+    
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x42, minutes);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x43, seconds);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x44, 00); //smallest update is second
+     }
+}
+
+
+
+DenonDNS3700.mixxxPlayPositionHandler = function(value)
+{   
+    var pos = Math.floor(value*100)
+    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x48, pos);
+    print(pos)
+}
+
+
+
 DenonDNS3700.mixxxPlay_indicator = function(value)
-{    
-    DenonDNS3700.commonLedOp(DenonDNS3700.Led.Play,(value ? DenonDNS3700.LedMode.On
+{   
+    //limiting midi out while debugging. 
+    if (DenonDNS3700.DEBUG_LEVEL != 2) {
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Play,(value ? DenonDNS3700.LedMode.On
                               : DenonDNS3700.LedMode.Off));
+        }
 }
 
 
 DenonDNS3700.mixxxCue_indicator = function(value)
-{    
+{   
+    //limiting midi out while debugging. 
+    if (DenonDNS3700.DEBUG_LEVEL != 2) {
     DenonDNS3700.commonLedOp(DenonDNS3700.Led.Cue,(value ? DenonDNS3700.LedMode.On
                               : DenonDNS3700.LedMode.Off));
+    }
 }
 
 //mixxxPlayHandler
@@ -959,6 +1109,25 @@ DenonDNS3700.autoLoopSetButtonChanged = function(channel, control, value)
         else {
             DenonDNS3700.commonLedOp(DenonDNS3700.Led.AutoLoopSet,(DenonDNS3700.LedMode.Off));
             DenonDNS3700.autoLoopState = DenonDNS3700.AutoLoopState.Off;
+        } 
+
+             
+    } 
+    DenonDNS3700.updatePlaybackDisplay();
+}
+
+DenonDNS3700.timeButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("Time Pressed");    
+        
+        if (DenonDNS3700.timeDisplayState == DenonDNS3700.TimeDisplayState.Remaining) {
+            DenonDNS3700.timeDisplayState = DenonDNS3700.TimeDisplayState.Elapsed;
+        }
+        else {
+            DenonDNS3700.timeDisplayState = DenonDNS3700.TimeDisplayState.Remaining;
         } 
 
              

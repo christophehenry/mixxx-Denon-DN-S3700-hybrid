@@ -253,6 +253,15 @@
                     <script-binding/>
                 </options>
             </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.timeButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x23</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
         </controls>
         <outputs/>
     </controller>
