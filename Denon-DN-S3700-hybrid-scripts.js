@@ -597,6 +597,7 @@ DenonDNS3700.updatePlaybackDisplay = function()
     DenonDNS3700.commonLedOp(DenonDNS3700.Led.Effects,(effectsLed));
     DenonDNS3700.commonLedOp(DenonDNS3700.Led.Parameters,(parametersLed));
     DenonDNS3700.commonLedOp(DenonDNS3700.Led.DiskEject,(ejectLed));
+    DenonDNS3700.updateHotCueDisplay();
 }
 
 DenonDNS3700.mixxxKeylockHandler = function()
@@ -722,6 +723,29 @@ DenonDNS3700.mixxxCue_indicator = function(value)
 DenonDNS3700.mixxxPlayHandler = function(value)
 {    
  
+}
+
+
+DenonDNS3700.updateHotCueDisplay = function()
+{
+    var totalsamples = engine.getValue(DenonDNS3700.channel, "track_samples");
+    var posh1 = Math.floor((engine.getValue(DenonDNS3700.channel, "hotcue_1_position")*100)/totalsamples);
+    var posh2 = Math.floor((engine.getValue(DenonDNS3700.channel, "hotcue_2_position")*100)/totalsamples);
+    var posh3 = Math.floor((engine.getValue(DenonDNS3700.channel, "hotcue_3_position")*100)/totalsamples);
+
+
+    //cleaning display. 
+    var i;
+    for (i = 0; i < 99; i++){
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3B, i);
+    } ;
+    
+
+    //add dots to display
+    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh1);
+    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh2);
+    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh3);
+
 }
 
 
