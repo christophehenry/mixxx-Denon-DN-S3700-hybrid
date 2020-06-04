@@ -3,7 +3,7 @@ function DenonDNS3700() {}
 /*
 Planning
 1. Add loop A/B/Reloop + hotcue led controls
-2. Add live time indication - confirmed available, 
+2. Add live time indication - confirmed available, DONE 
 3. Add live bpm indication - not confirmed available. 
 4. Design effects buttons echo / flanger / filter
 5. Add override for vinylcontrol via plattermode button?
@@ -349,6 +349,7 @@ DenonDNS3700.init = function (id, debug)
     DenonDNS3700.autoLoopState = DenonDNS3700.AutoLoopState.Off;
     DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Initializing;
     DenonDNS3700.trackState = DenonDNS3700.TrackState.Initializing;
+    DenonDNS3700.updateTimeDisplay();
     DenonDNS3700.startTimer(DenonDNS3700.requestPresetDataTimer, 250,
                             "DenonDNS3700.requestPresetDataTimerHandler");
 }
@@ -640,9 +641,11 @@ DenonDNS3700.mixxxBpmHandler = function(value)
             DenonDNS3700.trackState = DenonDNS3700.TrackState.Loaded;
             DenonDNS3700.userFlash("Track Loaded");
             DenonDNS3700.setTextDisplay(0, 0, engine.getValue(DenonDNS3700.channel, "bpm").toString());
-            DenonDNS3700.userFlash(engine.getValue(DenonDNS3700.channel, "bpm").toString());
+            //DenonDNS3700.userFlash(engine.getValue(DenonDNS3700.channel, "bpm").toString());
             DenonDNS3700.updatePlaybackDisplay();
         }
+        DenonDNS3700.setTextDisplay(0, 13, Math.floor(engine.getValue(DenonDNS3700.channel, "bpm")).toString());
+        //DenonDNS3700.updatePlaybackDisplay();
     }   
 }
 
@@ -737,16 +740,33 @@ DenonDNS3700.updateHotCueDisplay = function()
 
     //cleaning display. 
     var i;
-    for (i = 0; i < 99; i++){
+    for (i = 0; i < 100; i++){
         midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3B, i);
     } ;
     
 
     //add dots to display
-    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh1);
-    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh2);
-    midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh3);
+    if (posh1 > 0 ){
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh1);    
+    }
+    if (posh2 > 0 ){
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh2);
+    }
+    if (posh3 > 0){
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, 0x3A, posh3);
 
+    }
+
+}
+
+DenonDNS3700.updateTimeDisplay = function()
+{   
+        //display m,s,f near the time digits. 
+    
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_On, DenonDNS3700.Vdf.m);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_On, DenonDNS3700.Vdf.s);
+        midi.sendShortMsg(DenonDNS3700.CMD_CODE, DenonDNS3700.VdfMode.VDF_On, DenonDNS3700.Vdf.f);
+        
 }
 
 
