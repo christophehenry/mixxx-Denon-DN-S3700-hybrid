@@ -2,13 +2,12 @@ function DenonDNS3700() {}
 
 /*
 Planning
-1. Add loop A/B/Reloop + hotcue controls
+1. Add loop A/B/Reloop + hotcue led controls
 2. Add live time indication - confirmed available, 
 3. Add live bpm indication - not confirmed available. 
 4. Design effects buttons echo / flanger / filter
 5. Add override for vinylcontrol via plattermode button?
-6. Brake effect?
-7. trackstate & playstate as part of control
+
 
 
 TODO: Controls for hotcue leds instead of hard on/off --> mixxx 2.4
@@ -150,7 +149,10 @@ DenonDNS3700.TrackState = {
     Failed : 5 // TODO
 }
 
-DenonDNS3700.AutoLoopState = 0
+DenonDNS3700.AutoLoopState = {
+    Off : 0,
+    On  : 1
+}
 
 
 
@@ -944,13 +946,13 @@ DenonDNS3700.autoLoopSetButtonChanged = function(channel, control, value)
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("AutoLoopSet Pressed");    
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             DenonDNS3700.commonLedOp(DenonDNS3700.Led.AutoLoopSet,(DenonDNS3700.LedMode.On));
-            DenonDNS3700.AutoLoopState = 1;
+            DenonDNS3700.autoLoopState = DenonDNS3700.AutoLoopState.On;
         }
         else {
             DenonDNS3700.commonLedOp(DenonDNS3700.Led.AutoLoopSet,(DenonDNS3700.LedMode.Off));
-            DenonDNS3700.AutoLoopState = 0;
+            DenonDNS3700.autoLoopState = DenonDNS3700.AutoLoopState.Off;
         } 
 
              
@@ -966,7 +968,7 @@ DenonDNS3700.oneButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("One Pressed");
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.One,(DenonDNS3700.LedMode.On));   
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_1_activate",1);
             
@@ -990,7 +992,7 @@ DenonDNS3700.twoButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("Two Pressed");  
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.Two,(DenonDNS3700.LedMode.On));   
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_2_activate",1);
             
@@ -1014,7 +1016,7 @@ DenonDNS3700.threeButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("Three Pressed"); 
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.On));    
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_3_activate",1);
             
@@ -1038,7 +1040,7 @@ DenonDNS3700.clr1ButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("CLR1 Pressed"); 
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.One,(DenonDNS3700.LedMode.Off));   
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.AutoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_1_clear",1);
             
@@ -1062,7 +1064,7 @@ DenonDNS3700.clr2ButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("CLR2 Pressed");
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.Two,(DenonDNS3700.LedMode.Off));    
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.AutoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_2_clear",1);
             
@@ -1086,7 +1088,7 @@ DenonDNS3700.clr3ButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("CLR3 Pressed");
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.Off));    
         
-        if (DenonDNS3700.AutoLoopState == 0) {
+        if (DenonDNS3700.AutoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_3_clear",1);
             
