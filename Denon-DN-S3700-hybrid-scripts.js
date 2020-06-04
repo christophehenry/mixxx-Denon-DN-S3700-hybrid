@@ -340,21 +340,28 @@ DenonDNS3700.finishInit = function (id)
         DenonDNS3700.trackState = DenonDNS3700.TrackState.NotLoaded;
     }
     
-    // enter one of the playback states
-    if (DenonDNS3700.mixxxIsPlaying()) {
-        DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;        
-    } else {
-        if (bpmAvailable) {
-            DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Paused;
-        } else {
-            DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
-        }
-    }
+    DenonDNS3700.updatePlaybackState();
     // initial LED update based on the playback and track state
     DenonDNS3700.updatePlaybackDisplay();
 
     // update other things tied to the mixxx deck's state
     DenonDNS3700.mixxxKeylockHandler();
+}
+
+DenonDNS3700.updatePlaybackState = function()
+{
+    // enter one of the playback states
+    if (DenonDNS3700.mixxxIsPlaying()) {
+       
+        DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;        
+    } else {
+        if (DenonDNS3700.mixxxBpmIsAvailable()) {
+          //  DenonDNS3700.debugFlash("Mixxx is paused");
+            DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Paused;
+        } else {
+            DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
+        }
+    }
 }
 
 DenonDNS3700.turntableOn = function()
@@ -556,9 +563,7 @@ DenonDNS3700.mixxxCue_indicator = function(value)
 
 DenonDNS3700.mixxxPlayHandler = function(value)
 {    
-    if (value == 1) {
-        DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
-    }
+ 
 }
 
 
@@ -861,20 +866,14 @@ DenonDNS3700.playButtonChanged = function(channel, control, value)
     
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Play Pressed");
+        engine.setValue(DenonDNS3700.channel, "play",!(engine.getValue(DenonDNS3700.channel, "play")));
+                
+    }   
+    else {
+        DenonDNS3700.debugFlash("Play Released");
         
-        //engine.setValue(DenonDNS3700.channel, "play",! (DenonDNS3700.mixxxIsPlaying()));
-
-        if (DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Playing) {
-            if (DenonDNS3700.trackState == DenonDNS3700.TrackState.Loaded) {
-                DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Paused;
-            } else {
-                DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
-            }
-        } else {
-            DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
-            
-        }
     }
+    DenonDNS3700.updatePlaybackState();
     DenonDNS3700.updatePlaybackDisplay();
 
 }
@@ -885,43 +884,33 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("Cue Pressed");
-
-        if (engine.getValue(DenonDNS3700.channel, "vinylcontrol_enabled")) {
-
-            if (DenonDNS3700.mixxxIsPlaying()){
-
-               // engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);
-                DenonDNS3700.debugFlash("Go to stop");
-            }
-            else {
-               // engine.setValue(DenonDNS3700.channel, "cue_default",1);
-                DenonDNS3700.debugFlash("ohh no");
-            }
-
-            
-        }
-        else {
-        //engine.setValue(DenonDNS3700.channel, "cue_default",1);
-        }
         
 
-              
-        if (DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Searching) {
-           if (DenonDNS3700.trackState == DenonDNS3700.TrackState.Loaded) {
-               DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Playing;
+        if (engine.getValue(DenonDNS3700.channel, "vinylcontrol_enabled")) {
+            if (DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Playing){
+                
+
+                engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);
             }
-        } else {
-            DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
-        }             
+            else {
+                engine.setValue(DenonDNS3700.channel, "cue_default",1);
+                
+            }
+
+        }
+        else {
+            engine.setValue(DenonDNS3700.channel, "cue_default",1);
+        }
+
+         
     } else {
         // cue button released
         DenonDNS3700.debugFlash("Cue Released");
-       // engine.setValue(DenonDNS3700.channel, "cue_default",0);
-        
-        DenonDNS3700.playbackState = DenonDNS3700.PlaybackState.Searching;
-      
+        engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);  
+        engine.setValue(DenonDNS3700.channel, "play",0);    
 
     }
+    DenonDNS3700.updatePlaybackState();
     DenonDNS3700.updatePlaybackDisplay();
 }
 
