@@ -48,6 +48,12 @@ DenonDNS3700.LedMode = {
     Blink: 0x4C
 }
 
+DenonDNS3700.VDFMode = {
+    VDF_On: 0x4D,
+    VDF_Off: 0x4E,
+    VDF_Blink: 0x4F
+}
+
 DenonDNS3700.Led = {
     DiskEject: 0x01,
     Playlist: 0x02,
@@ -1086,9 +1092,11 @@ DenonDNS3700.clr3ButtonChanged = function(channel, control, value)
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("CLR3 Pressed");
-        DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.Off));    
-        
-        if (DenonDNS3700.AutoLoopState == DenonDNS3700.AutoLoopState.Off) {
+        //DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.Off));    
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.ThreeDimmer,(DenonDNS3700.LedMode.On));   
+
+
+        if (DenonDNS3700.autoLoopState == DenonDNS3700.AutoLoopState.Off) {
             
             engine.setValue(DenonDNS3700.channel, "hotcue_3_clear",1);
             
