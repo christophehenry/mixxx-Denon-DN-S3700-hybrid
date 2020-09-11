@@ -30,6 +30,15 @@
             </control>
             <control>
                 <group>[Master]</group>
+                <key>DenonDNS3700.effectsRotaryChanged</key>
+                <status>0xB0</status>
+                <midino>0x55</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
                 <key>DenonDNS3700.presetDataChanged</key>
                 <status>0x80</status>
                 <midino>0x52</midino>
@@ -262,6 +271,116 @@
                     <script-binding/>
                 </options>
             </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.echoloopButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x12</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.echoloopButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x12</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.flangerButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x13</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.flangerButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x13</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.filterButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.filterButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.aButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x37</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.aButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x37</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.bButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x39</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.bButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x39</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control> 
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.exitReloopButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x40</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.exitReloopButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x40</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            
         </controls>
         <outputs/>
     </controller>
