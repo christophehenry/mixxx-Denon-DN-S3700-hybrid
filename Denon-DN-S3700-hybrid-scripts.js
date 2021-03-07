@@ -1207,14 +1207,15 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
 
         }
         else {
-            engine.setValue(DenonDNS3700.channel, "cue_default",0);
+            engine.setValue(DenonDNS3700.channel, "cue_default",1);
         }
 
          
     } else {
         // cue button released
         DenonDNS3700.debugFlash("Cue Released");
-        engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);  
+        //engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1); 
+        engine.setValue(DenonDNS3700.channel, "cue_default",0); 
         //engine.setValue(DenonDNS3700.channel, "play",0);    
 
     }
