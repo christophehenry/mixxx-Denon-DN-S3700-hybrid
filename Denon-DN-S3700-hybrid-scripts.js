@@ -1207,7 +1207,7 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
 
         }
         else {
-            engine.setValue(DenonDNS3700.channel, "cue_default",1);
+            engine.setValue(DenonDNS3700.channel, "cue_default",0);
         }
 
          
