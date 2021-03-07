@@ -1215,7 +1215,7 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
         // cue button released
         DenonDNS3700.debugFlash("Cue Released");
         engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);  
-        engine.setValue(DenonDNS3700.channel, "play",0);    
+        //engine.setValue(DenonDNS3700.channel, "play",0);    
 
     }
     DenonDNS3700.updatePlaybackState();
