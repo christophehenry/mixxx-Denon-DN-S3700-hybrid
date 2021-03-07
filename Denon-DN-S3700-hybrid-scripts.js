@@ -262,6 +262,7 @@ DenonDNS3700.CHANNEL_CONNECTIONS = [
     {control: "hotcue_1_enabled",   handler: "mixxxHotcue_1_Handler"},
     {control: "hotcue_2_enabled",   handler: "mixxxHotcue_2_Handler"},
     {control: "hotcue_3_enabled",   handler: "mixxxHotcue_3_Handler"},
+    {control: "vinylcontrol_enabled",   handler: "vinylcontrolHandler"},
 
     
     
@@ -794,6 +795,17 @@ DenonDNS3700.mixxxHotcue_3_Handler = function(value)
      }
      else {
         DenonDNS3700.commonLedOp(DenonDNS3700.Led.Three,(DenonDNS3700.LedMode.Off));
+     }
+}
+DenonDNS3700.vinylcontrolHandler = function(value)
+{
+    if (value == 1) {
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.PlatterModeOrange,(DenonDNS3700.LedMode.On)); 
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.PlatterModeGreen,(DenonDNS3700.LedMode.Off));
+     }
+     else {
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.PlatterModeOrange,(DenonDNS3700.LedMode.Off)); 
+        DenonDNS3700.commonLedOp(DenonDNS3700.Led.PlatterModeGreen,(DenonDNS3700.LedMode.On)); 
      }
 }
 
@@ -1707,3 +1719,26 @@ DenonDNS3700.filterButtonChanged = function(channel, control, value)
     DenonDNS3700.updatePlaybackDisplay();
 }
 
+DenonDNS3700.platerModeButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("Plater Mode - Pressed"); 
+        if (DenonDNS3700.DVS){
+            DenonDNS3700.DVS = false;
+        }
+        else
+        {
+            DenonDNS3700.DVS = true;
+        }
+            
+        } 
+
+    else {
+        DenonDNS3700.debugFlash("Plater Mode - Released"); 
+
+    }          
+    engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", DenonDNS3700.DVS);
+    DenonDNS3700.updatePlaybackDisplay();
+}
