@@ -4,9 +4,9 @@ function DenonDNS3700() {}
 Planning
 1. Add loop A/B/Reloop + hotcue led controls
 2. Add live time indication - confirmed available, [DONE ]
-3. Add live bpm indication - not confirmed available. 
+3. Add live bpm indication - not confirmed available. [DONE ]
 4. Design effects buttons echo / flanger / filter [Framework built see updateplaybackdisplay function]
-5. Add override for vinylcontrol via plattermode button?
+5. Add override for vinylcontrol via plattermode button? [TO TEST]
 
 
 
