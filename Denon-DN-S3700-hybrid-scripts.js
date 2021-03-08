@@ -1207,17 +1207,11 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
         
 
         if (engine.getValue(DenonDNS3700.channel, "vinylcontrol_enabled")) {
-            if (DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Playing){
-                
-
-                engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);
-            }
-            else {
-                engine.setValue(DenonDNS3700.channel, "cue_default",1);
+            engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);
                 
             }
 
-        }
+        
         else {
             engine.setValue(DenonDNS3700.channel, "cue_default",1);
         }
@@ -1226,9 +1220,17 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
     } else {
         // cue button released
         DenonDNS3700.debugFlash("Cue Released");
-        //engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1); 
-        engine.setValue(DenonDNS3700.channel, "cue_default",0); 
-        //engine.setValue(DenonDNS3700.channel, "play",0);    
+
+        if (engine.getValue(DenonDNS3700.channel, "vinylcontrol_enabled")) {
+            //engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",0);
+            engine.setValue(DenonDNS3700.channel, "cue_default",0);
+                
+            }
+
+        
+        else {
+            engine.setValue(DenonDNS3700.channel, "cue_default",0);
+        }  
 
     }
     DenonDNS3700.updatePlaybackState();
