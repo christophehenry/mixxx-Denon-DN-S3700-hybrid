@@ -27,7 +27,7 @@ TODO: Controls for hotcue leds instead of hard on/off --> mixxx 2.4
 
 
 
-DenonDNS3700.DEBUG_LEVEL = 2;
+DenonDNS3700.DEBUG_LEVEL = 0;
 DenonDNS3700.DVS = true;
 
 DenonDNS3700.CMD_CODE = 0xB0;
@@ -550,6 +550,7 @@ DenonDNS3700.isInitializing = function()
 
 DenonDNS3700.updatePlaybackDisplay = function()
 {
+    DenonDNS3700.updatePlaybackState();
     switch(DenonDNS3700.playbackState) {
     case DenonDNS3700.PlaybackState.Initializing:
         return;
@@ -765,7 +766,7 @@ DenonDNS3700.mixxxCue_indicator = function(value)
 
 DenonDNS3700.mixxxPlayHandler = function(value)
 {    
- 
+ DenonDNS3700.updatePlaybackState();
 }
 
 DenonDNS3700.mixxxHotcue_1_Handler = function(value)
@@ -1193,13 +1194,14 @@ DenonDNS3700.playButtonChanged = function(channel, control, value)
         DenonDNS3700.debugFlash("Play Released");
         
     }
-    DenonDNS3700.updatePlaybackState();
     DenonDNS3700.updatePlaybackDisplay();
 
 }
 
 DenonDNS3700.cueButtonChanged = function(channel, control, value)
 {
+
+
     if (DenonDNS3700.isInitializing()) return;
    
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
@@ -1207,11 +1209,18 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
         
 
         if (engine.getValue(DenonDNS3700.channel, "vinylcontrol_enabled")) {
+            if(DenonDNS3700.playbackState == DenonDNS3700.PlaybackState.Playing){
             engine.setValue(DenonDNS3700.channel, "cue_gotoandstop",1);
+            DenonDNS3700.debugFlash("PLAYING");    
+            }
+            else {
+                engine.setValue(DenonDNS3700.channel, "cue_default",1);
+                DenonDNS3700.debugFlash("PAUZED"); 
                 
             }
+        }
 
-        
+
         else {
             engine.setValue(DenonDNS3700.channel, "cue_default",1);
         }
@@ -1233,7 +1242,7 @@ DenonDNS3700.cueButtonChanged = function(channel, control, value)
         }  
 
     }
-    DenonDNS3700.updatePlaybackState();
+
     DenonDNS3700.updatePlaybackDisplay();
 }
 
