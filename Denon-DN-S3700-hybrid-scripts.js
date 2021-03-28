@@ -26,7 +26,7 @@ TODO: Controls for hotcue leds instead of hard on/off --> mixxx 2.4
 */
 
 DenonDNS3700.DEBUG_LEVEL = 0;
-DenonDNS3700.DVS = true;
+DenonDNS3700.DVS = false;
 
 DenonDNS3700.CMD_CODE = 0xB0;
 
@@ -433,7 +433,7 @@ DenonDNS3700.finishInit = function (id)
     // no longer need the timer for initial flashing
     DenonDNS3700.stopTimer(DenonDNS3700.initFlashTimer);
 
-    // force into vinyl control? this is convenient but questionable
+    // Set vinyl control 
     engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", DenonDNS3700.DVS);
 
     // enable connections
@@ -1852,7 +1852,8 @@ DenonDNS3700.flipButtonChanged = function(channel, control, value)
             DenonDNS3700.DUALLAYER = DenonDNS3700.dualLayer.Off;
         }
         
-
+        //set dvs to false to avoid stopping music from current deck.
+        DenonDNS3700.DVS = false; 
         DenonDNS3700.presetDataChanged();
     DenonDNS3700.updatePlaybackDisplay();
     }
