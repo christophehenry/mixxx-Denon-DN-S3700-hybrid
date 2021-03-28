@@ -25,8 +25,6 @@ TODO: Controls for hotcue leds instead of hard on/off --> mixxx 2.4
 ################
 */
 
-
-
 DenonDNS3700.DEBUG_LEVEL = 0;
 DenonDNS3700.DVS = true;
 
@@ -163,6 +161,11 @@ DenonDNS3700.EffectsState = {
     Filter: 3,
 }
 
+DenonDNS3700.dualLayer = {
+    Off: 1,
+    On: 3
+}
+DenonDNS3700.DUALLAYER = DenonDNS3700.dualLayer.Off;
 
 
 DenonDNS3700.PRESET_REQUEST = [
@@ -372,7 +375,7 @@ DenonDNS3700.init = function (id, debug)
 // used during initialization to obtain deck number from the preset data;
 DenonDNS3700.inboundSysex = function (data, length)
 {
-    DenonDNS3700.deck = data[DenonDNS3700.PRESET_UNIT_OFFSET] + 1;
+    DenonDNS3700.deck = data[DenonDNS3700.PRESET_UNIT_OFFSET] + DenonDNS3700.DUALLAYER;
     DenonDNS3700.channel = "[Channel" + DenonDNS3700.deck + "]"; 
     DenonDNS3700.effectUnit = "[EffectRack1_EffectUnit" + DenonDNS3700.deck;
 }
@@ -1832,6 +1835,25 @@ DenonDNS3700.reverseButtonChanged = function(channel, control, value)
     if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
         DenonDNS3700.debugFlash("reverse - Pressed"); 
         
+    DenonDNS3700.updatePlaybackDisplay();
+    }
+}
+DenonDNS3700.flipButtonChanged = function(channel, control, value)
+{
+    if (DenonDNS3700.isInitializing()) return;
+   
+    if (value == DenonDNS3700.ButtonChange.ButtonPressed) {
+        DenonDNS3700.debugFlash("flip - Pressed");
+        if (DenonDNS3700.DUALLAYER == DenonDNS3700.dualLayer.Off) {
+            DenonDNS3700.DUALLAYER = DenonDNS3700.dualLayer.On;
+        }
+        else
+        {
+            DenonDNS3700.DUALLAYER = DenonDNS3700.dualLayer.Off;
+        }
+        
+
+        DenonDNS3700.presetDataChanged();
     DenonDNS3700.updatePlaybackDisplay();
     }
 }
