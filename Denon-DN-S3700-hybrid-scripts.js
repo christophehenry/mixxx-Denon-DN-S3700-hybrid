@@ -391,10 +391,9 @@ DenonDNS3700.requestPresetDataTimerHandler = function()
     } else {
         DenonDNS3700.stopTimer(DenonDNS3700.requestPresetDataTimer);
         var maxAllowedDecks = engine.getValue("[Master]","num_decks");
-        if (DenonDNS3700.deck >= maxAllowedDecks) {
+        if (DenonDNS3700.deck >= maxAllowedDecks+1) {
             DenonDNS3700.setTextDisplay(0, 0, "Deck Number Bad :(");
-            DenonDNS3700.setTextDisplay(1, 0, "Hold MEMO > Select Unit No Set > " +
-                                              "Select 1 through " + (maxAllowedDecks+1));
+            DenonDNS3700.setTextDisplay(1, 0, (engine.getValue("[Master]","num_decks").toString()));
         } else {
             DenonDNS3700.initDisplayCounter = 8;
             DenonDNS3700.startTimer(DenonDNS3700.initFlashTimer, 500,
