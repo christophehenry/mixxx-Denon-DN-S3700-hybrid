@@ -1854,6 +1854,7 @@ DenonDNS3700.flipButtonChanged = function(channel, control, value)
         
         //set dvs to false to avoid stopping music from current deck.
         DenonDNS3700.DVS = false; 
+        engine.setValue(DenonDNS3700.channel, "vinylcontrol_enabled", DenonDNS3700.DVS);
         DenonDNS3700.presetDataChanged();
     DenonDNS3700.updatePlaybackDisplay();
     }
