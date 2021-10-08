@@ -505,6 +505,24 @@
                     <script-binding/>
                 </options>
             </control>
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.flipButtonChanged</key>
+                <status>0x90</status>
+                <midino>0x36</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
+                <key>DenonDNS3700.flipButtonChanged</key>
+                <status>0x80</status>
+                <midino>0x36</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
         </controls>
         <outputs/>
     </controller>
